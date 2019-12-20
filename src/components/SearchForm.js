@@ -1,30 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import CharacterCard from './CharacterCard';
+import styled from 'styled-components';
 
-export default function SearchForm() {
-  const [items, setItems] = useState([]);
+const Searchbox = styled.div`
+    display: flex;
+    background: gray;
+    border: black solid 1px;
+`
+
+export default function SearchForm(props) {
+  const [items, setItems] = useState(props);
     const [query, setQuery] =useState('');
     useEffect(()=>{
-        console.log("Axios activated")
-        axios.get('http://poterapi.com/v1/spells',{
-                params:{
-                    key:'$2a$10$dCvO83kjrvgy0HIfgxJb.uCeZ61tDXpxZU1ybWAYNWw7rePU90J2u'
-                }
-            }
-        )
-        //I wll need to alter this for each API
-        //HP API has a spell data type
-        .then(res =>{
-            const data =res.data;
-            console.log(res);
-            const result =data.filter(item => item.spell.toLowerCase()
-            .includes(query.toLowerCase())
-            );
-            setItems(res);
-        });
+        console.log('Your props are:');
+        console.log(props);
+        const result = props.filter(item => (item.name.toLowerCase()
+        .includes(query.toLowerCase())));
+        setItems(result);
+        console.log(`Query ran Result below`)
+        console.log(items);
     },[query])
+
     const handleChange = event => {
         setQuery(event.target.value);
       };
+    
     return(
         //I will neeed to alter my class names for styling
       <section className="search-form" >
@@ -39,16 +39,14 @@ export default function SearchForm() {
                     placeholder='search text here'
                     autoComplete='off'
                 />
-                <div>
+                <Searchbox>
                     {items.map(item => {
                       return(
                           //I will need to style this to match the required assignment
-                          <div>
-                            <h2>{`${item}`}</h2>    
-                          </div>
+                          CharacterCard(item)
                       )  
                     })}
-                </div>
+                </Searchbox>
             </form>
         </div>
       </section>
